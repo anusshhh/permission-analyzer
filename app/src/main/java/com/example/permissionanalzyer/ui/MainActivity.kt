@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         binding.viewPager.adapter = viewPagerAdapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Apps"
+                0 -> "Installed Apps"
                 1 -> "System Apps"
                 else -> null
             }

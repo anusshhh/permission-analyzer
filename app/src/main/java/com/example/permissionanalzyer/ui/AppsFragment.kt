@@ -32,7 +32,7 @@ class AppsFragment : Fragment() {
 
         val adapter = AppListAdapter { appInfo ->
             val intent = Intent(requireContext(), ReportsActivity::class.java)
-            val appName = requireContext().getAppName(appInfo)
+            val appName = appInfo.getAppName(requireContext())
             val packageName = appInfo.packageName
             intent.putExtra("APP_NAME", appName)
             intent.putExtra("PACKAGE_NAME", packageName)

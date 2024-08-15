@@ -6,16 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
-
-    <TextView
-        android:id="@+id/tv_app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Permission Analyzer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
@@ -24,7 +14,7 @@
         app:tabIndicatorColor="@android:color/white"
         app:tabTextColor="@android:color/white"
         app:tabSelectedTextColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/tv_app_name"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <androidx.viewpager2.widget.ViewPager2
