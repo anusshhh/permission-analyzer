@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="textColor" format="color"/>
+
+    <declare-styleable name="SpeedView" parent="Speedometer">
+        <attr name="indicatorColor" />
+        <attr name="centerCircleColor" />
+        <attr name="markColor" />
+        <attr name="lowSpeedColor" />
+        <attr name="mediumSpeedColor" />
+        <attr name="highSpeedColor" />
+        <attr name="textColor" />
+        <attr name="backgroundCircleColor" />
+        <attr name="speedTextColor" />
+        <attr name="speedometerWidth" />
+        <attr name="maxSpeed" />
+        <attr name="withTremble" />
+        <attr name="withBackgroundCircle" />
+        <attr name="speedTextSize" />
+        <attr name="textSize" />
+        <attr name="unit" />
+
+    </declare-styleable>
+    <declare-styleable name="Speedometer">
+        <attr name="indicatorColor" format="color" />
+        <attr name="centerCircleColor" format="color" />
+        <attr name="markColor" format="color" />
+        <attr name="lowSpeedColor" format="color" />
+        <attr name="mediumSpeedColor" format="color" />
+        <attr name="highSpeedColor" format="color" />
+        <attr name="textColor" />
+        <attr name="backgroundCircleColor" format="color" />
+        <attr name="speedTextColor" format="color" />
+        <attr name="speedometerWidth" format="dimension" />
+        <attr name="maxSpeed" format="integer" />
+        <attr name="withTremble" format="boolean" />
+        <attr name="withBackgroundCircle" format="boolean" />
+        <attr name="speedTextSize" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="unit" format="string" />
+    </declare-styleable>
+
+</resources>

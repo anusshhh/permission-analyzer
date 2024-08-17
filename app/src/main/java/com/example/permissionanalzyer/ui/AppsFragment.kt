@@ -42,6 +42,6 @@ class AppsFragment : Fragment() {
         }
 
         binding.rvSystemApps.adapter = adapter
-        binding.rvSystemApps.layoutManager = GridLayoutManager(requireContext(),3)
+        binding.rvSystemApps.layoutManager = GridLayoutManager(requireContext(),4)
     }
 }

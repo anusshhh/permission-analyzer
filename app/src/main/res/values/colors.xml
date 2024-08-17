@@ -7,4 +7,7 @@
     <color name="grey">#1F1F20</color>
     <color name="folly">#F4004A</color>
     <color name="green">#A1FE00</color>
+    <color name="low_green">#2DC937</color>
+    <color name="mid_yellow">#E7B416</color>
+    <color name="high_red">#CC3232</color>
 </resources>

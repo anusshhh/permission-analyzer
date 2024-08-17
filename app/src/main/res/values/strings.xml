@@ -4,4 +4,12 @@
     <string name="trackers_label">Trackers</string>
     <string name="permissions_label">Permissions</string>
     <string name="app_package_and_version">%1$s (%2$s)</string>
+    <string name="label_permission_list">Permission List :</string>
+    <string name="label_tracker_list">Tracker List :</string>
+    <string name="no_trackers_found">No trackers found.</string>
+    <string name="no_permissions_found">No permissions found.</string>
+    <string name="privacy_risk">Privacy Risk :</string>
+    <string name="low">Low</string>
+    <string name="moderate">Moderate</string>
+    <string name="high">High></string>
 </resources>

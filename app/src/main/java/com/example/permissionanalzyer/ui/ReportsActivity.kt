@@ -8,13 +8,17 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.permissionanalzyer.R
 import com.example.permissionanalzyer.adapter.AppInfoAdapter
 import com.example.permissionanalzyer.databinding.ActivityReportsBinding
+import com.example.permissionanalzyer.utils.countDangerousPermissions
 import com.example.permissionanalzyer.utils.getAppIcon
 import com.example.permissionanalzyer.utils.getAppName
+import com.example.permissionanalzyer.utils.gone
+import com.example.permissionanalzyer.utils.visible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,51 +27,119 @@ import org.jsoup.select.Elements
 
 class ReportsActivity : AppCompatActivity() {
     lateinit var binding: ActivityReportsBinding
+    lateinit var permissionList: List<String>
+    lateinit var trackerList: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityReportsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.progressbar.visible()
 
         // Retrieve the app name and package name from the intent
-        val appName = intent.getStringExtra("APP_NAME")
+        val appName = intent.getStringExtra("APP_NAME") ?: ""
         val selectedPackageName = intent.getStringExtra("PACKAGE_NAME") ?: ""
 
         val appInfo = packageManager.getApplicationInfo(selectedPackageName, 0)
 
         updateAppInfoUI(appInfo)
 
-        val requestedPermissions = fetchPermissionList(selectedPackageName)
-        if (requestedPermissions.isNotEmpty()) {
-            val adapter = AppInfoAdapter()
-            adapter.submitList(requestedPermissions)
+        permissionList = fetchPermissionList(selectedPackageName)
+        if (permissionList.isNotEmpty()) {
+            val adapter = AppInfoAdapter(true)
+            adapter.submitList(permissionList)
             binding.rvPermissionList.layoutManager =
                 LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             binding.rvPermissionList.adapter = adapter
-            binding.tvPermissionCount.text = requestedPermissions.size.toString()
-
         } else {
+            binding.rvPermissionList.gone()
+            binding.groupPermissionNoData.visible()
+
             Log.d(
                 "PermissionActivity",
                 "No permissions found for package: $selectedPackageName"
             )
         }
+        binding.tvPermissionCount.text = permissionList.size.toString()
 
-        if (appName != null) {
+        if (appName.isNotBlank()) {
             lifecycleScope.launch(Dispatchers.Main) {
-                val trackerList = fetchTrackersForApp(selectedPackageName)
+                trackerList = fetchTrackersForApp(selectedPackageName)
                 val adapter = AppInfoAdapter()
-                adapter.submitList(trackerList)
-                binding.rvTrackerList.layoutManager =
-                    LinearLayoutManager(this@ReportsActivity, LinearLayoutManager.VERTICAL, false)
-                binding.rvTrackerList.adapter = adapter
+                if (trackerList.isNotEmpty()) {
+                    adapter.submitList(trackerList)
+                    binding.rvTrackerList.layoutManager =
+                        LinearLayoutManager(
+                            this@ReportsActivity,
+                            LinearLayoutManager.VERTICAL,
+                            false
+                        )
+                    binding.rvTrackerList.adapter = adapter
+                } else {
+                    binding.rvTrackerList.gone()
+                    binding.groupTrackerNoData.visible()
+                }
                 binding.tvTrackerCount.text = trackerList.size.toString()
+                binding.progressbar.gone()
 
+                gaugeAnimation()
             }
         }
 
         registerClickListeners()
 
+    }
+
+    private fun gaugeAnimation() {
+        val gaugeHelper = GaugeHelper(
+            onRotateDegreeChanged = { degree -> binding.gaugeView.setRotateDegree(degree) },
+            onSweepAngleFirstChartChanged = { angle ->
+                binding.gaugeView.setSweepAngleFirstChart(angle)
+                binding.tvPrivacyRiskResult.apply{
+                    text = getString(R.string.low)
+                    setTextColor(ContextCompat.getColor(context, R.color.low_green))
+                }
+
+            },
+            onSweepAngleSecondChartChanged = { angle ->
+                binding.gaugeView.setSweepAngleSecondChart(angle)
+                binding.tvPrivacyRiskResult.apply{
+                    text = getString(R.string.moderate)
+                    setTextColor(ContextCompat.getColor(context, R.color.mid_yellow))
+                }
+            },
+            onSweepAngleThirdChartChanged = { angle ->
+                binding.gaugeView.setSweepAngleThirdChart(angle)
+                binding.tvPrivacyRiskResult.apply{
+                    text = getString(R.string.high)
+                    setTextColor(ContextCompat.getColor(context, R.color.high_red))
+                }
+            }
+        )
+        val appScore = getPrivacyRiskScore()
+        gaugeHelper.startRunning(appScore)
+    }
+
+    private fun getPrivacyRiskScore(): Int {
+        val permissionWeight = 10
+        val trackerWeight = 5
+        val dangerousPermissionCount = countDangerousPermissions(permissionList)
+        val trackerCount = trackerList.size
+        val rawScore =
+            (dangerousPermissionCount * permissionWeight) + (trackerCount * trackerWeight)
+        val maxPermissions = 20
+        val maxTrackers = 20
+
+        val maxRawScore = (maxPermissions * permissionWeight) + (maxTrackers * trackerWeight)
+
+        Log.e(
+            "TAG",
+            "getPrivacyRiskScore: $dangerousPermissionCount $trackerCount $rawScore $maxRawScore",
+        )
+
+        val normalizedScore = (rawScore.toDouble() / maxRawScore) * 300
+
+        return normalizedScore.toInt().coerceIn(0, 300)
     }
 
     private fun registerClickListeners() {
@@ -89,6 +161,10 @@ class ReportsActivity : AppCompatActivity() {
             }, 2000)
         }
 
+        binding.ivBackArrow.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
     }
 
     private fun updateAppInfoUI(appInfo: ApplicationInfo) {
@@ -107,11 +183,7 @@ class ReportsActivity : AppCompatActivity() {
                 val url =
                     "https://reports.exodus-privacy.eu.org/en/reports/$selectedPackageName/latest/" // Hypothetical URL
                 val document = Jsoup.connect(url).get()
-
-                // Extract tracker information from the document
                 val trackerList = ArrayList<String>()
-
-                // Extract the trackers
                 val trackerElements: Elements = document.select("p a.link.black")
                 val badgeElements: Elements =
                     document.select("span.badge.badge-pill.badge-outline-primary")
