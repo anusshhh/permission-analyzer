@@ -24,5 +24,10 @@ class MainActivity : AppCompatActivity() {
                 else -> null
             }
         }.attach()
+
+        binding.ibAboutUs.setOnClickListener{
+            val bottomSheetFragment = AboutUsBottomSheetFragment()
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+        }
     }
 }

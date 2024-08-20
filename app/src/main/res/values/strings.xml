@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">PermissionAnalzyer</string>
+    <string name="app_name">PermiSpectre</string>
     <string name="label_app_name">Application Name :</string>
     <string name="trackers_label">Trackers</string>
     <string name="permissions_label">Permissions</string>
-    <string name="app_package_and_version">%1$s (%2$s)</string>
+    <string name="version">(%1$s)</string>
     <string name="label_permission_list">Permission List :</string>
     <string name="label_tracker_list">Tracker List :</string>
     <string name="no_trackers_found">No trackers found.</string>
@@ -11,5 +11,5 @@
     <string name="privacy_risk">Privacy Risk :</string>
     <string name="low">Low</string>
     <string name="moderate">Moderate</string>
-    <string name="high">High></string>
+    <string name="high">High</string>
 </resources>

@@ -4,10 +4,17 @@
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#FFC300</color>
     <color name="red">#DC143C</color>
-    <color name="grey">#1F1F20</color>
-    <color name="folly">#F4004A</color>
-    <color name="green">#A1FE00</color>
     <color name="low_green">#2DC937</color>
-    <color name="mid_yellow">#E7B416</color>
+    <color name="mid_yellow">#F8AE59</color>
     <color name="high_red">#CC3232</color>
+
+
+    <color name="primary_blue">#89CFF0</color>
+    <color name="secondary_blue">#133371</color>
+    <color name="sage_green">#ADD8E6</color>
+    <color name="background_grey">#F5F5F5</color>
+
+
+
+
 </resources>

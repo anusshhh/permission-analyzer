@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_about_us_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="About Us"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_introduction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Introduction"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_intro_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome to PermiSpectre, your trusted solution for managing and understanding application permissions."
+        android:textColor="@color/black"
+
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/text_mission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Mission Statement"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_mission_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Our mission is to empower users with greater control over their privacy by providing a clear and comprehensive view of application permissions."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/text_team"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Team"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_team_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Our team consists of cybersecurity experts and privacy advocates dedicated to enhancing user security and privacy."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/text_features"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Features"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_features_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Our scanner analyzes application permissions, identifies potential risks, and offers actionable insights to help you make informed decisions."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/text_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Contact Information"
+
+        android:textColor="@color/black"
+        android:textSize="16sp"
+
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_contact_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="For support or inquiries, please contact us at [email address] or visit our website at [website URL]."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/text_acknowledgments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Acknowledgments"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_acknowledgments_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="We’d like to thank the open-source community for their invaluable contributions to our project."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+</LinearLayout>

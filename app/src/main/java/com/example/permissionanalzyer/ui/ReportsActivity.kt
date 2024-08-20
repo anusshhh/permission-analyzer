@@ -2,12 +2,10 @@ package com.example.permissionanalzyer.ui
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +18,7 @@ import com.example.permissionanalzyer.utils.getAppName
 import com.example.permissionanalzyer.utils.gone
 import com.example.permissionanalzyer.utils.visible
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -34,7 +33,7 @@ class ReportsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReportsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.progressbar.visible()
+        //binding.progressbar.visible()
 
         // Retrieve the app name and package name from the intent
         val appName = intent.getStringExtra("APP_NAME") ?: ""
@@ -80,41 +79,57 @@ class ReportsActivity : AppCompatActivity() {
                     binding.groupTrackerNoData.visible()
                 }
                 binding.tvTrackerCount.text = trackerList.size.toString()
-                binding.progressbar.gone()
+                // binding.progressbar.gone()
 
                 gaugeAnimation()
             }
         }
-
         registerClickListeners()
-
     }
 
     private fun gaugeAnimation() {
         val gaugeHelper = GaugeHelper(
-            onRotateDegreeChanged = { degree -> binding.gaugeView.setRotateDegree(degree) },
+            onRotateDegreeChanged = { degree ->
+                binding.gaugeView.setRotateDegree(degree)
+                when {
+                    degree <= -135 -> {
+                        binding.tvPrivacyRiskResult.apply {
+                            text = getString(R.string.low)
+                            setTextColor(ContextCompat.getColor(context, R.color.low_green))
+                        }
+                    }
+
+                    degree <= -45 -> {
+                        binding.tvPrivacyRiskResult.apply {
+                            text = getString(R.string.moderate)
+                            setTextColor(ContextCompat.getColor(context, R.color.mid_yellow))
+                        }
+                    }
+
+                    degree <= 45 -> {
+                        binding.tvPrivacyRiskResult.apply {
+                            text = getString(R.string.high)
+                            setTextColor(ContextCompat.getColor(context, R.color.red))
+                        }
+                    }
+
+                    else -> {
+                        binding.tvPrivacyRiskResult.apply {
+                            text = getString(R.string.low)
+                            setTextColor(ContextCompat.getColor(context, R.color.low_green))
+                        }
+                    }
+                }
+            },
             onSweepAngleFirstChartChanged = { angle ->
                 binding.gaugeView.setSweepAngleFirstChart(angle)
-                binding.tvPrivacyRiskResult.apply{
-                    text = getString(R.string.low)
-                    setTextColor(ContextCompat.getColor(context, R.color.low_green))
-                }
-
             },
             onSweepAngleSecondChartChanged = { angle ->
                 binding.gaugeView.setSweepAngleSecondChart(angle)
-                binding.tvPrivacyRiskResult.apply{
-                    text = getString(R.string.moderate)
-                    setTextColor(ContextCompat.getColor(context, R.color.mid_yellow))
-                }
             },
             onSweepAngleThirdChartChanged = { angle ->
                 binding.gaugeView.setSweepAngleThirdChart(angle)
-                binding.tvPrivacyRiskResult.apply{
-                    text = getString(R.string.high)
-                    setTextColor(ContextCompat.getColor(context, R.color.high_red))
-                }
-            }
+            },
         )
         val appScore = getPrivacyRiskScore()
         gaugeHelper.startRunning(appScore)
@@ -144,36 +159,46 @@ class ReportsActivity : AppCompatActivity() {
 
     private fun registerClickListeners() {
         binding.cardviewPermission.setOnClickListener {
-            binding.nestedScrollView.smoothScrollTo(0, binding.tvPermissionListLabel.top)
-            binding.tvPermissionListLabel.setTextColor(Color.YELLOW)
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.tvPermissionListLabel.setTextColor(Color.WHITE)
-            }, 2000)
-
+            binding.nestedScrollView.post {
+                binding.nestedScrollView.smoothScrollTo(0, binding.rvPermissionList.bottom)
+            }
+            blinkCard(binding.cardPermissionList)
         }
 
         binding.cardviewTracker.setOnClickListener {
-            binding.nestedScrollView.smoothScrollTo(0, binding.tvTrackerListLabel.top)
-            // logic for highlighting
-            binding.tvTrackerListLabel.setTextColor(Color.YELLOW)
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.tvTrackerListLabel.setTextColor(Color.WHITE)
-            }, 2000)
+            binding.nestedScrollView.post {
+                binding.nestedScrollView.smoothScrollTo(0, binding.root.bottom)
+            }
+            blinkCard(binding.cardTrackerList)
         }
 
         binding.ivBackArrow.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-
     }
+
+    private fun blinkCard(cardView: CardView) {
+        val originalColor = ContextCompat.getColor(cardView.context, R.color.primary_blue)
+        val newColor = ContextCompat.getColor(cardView.context, R.color.secondary_blue)
+
+        lifecycleScope.launch((Dispatchers.Main)) {
+            repeat(3) { // Blink 3 times
+                cardView.setCardBackgroundColor(newColor)
+                delay(200) // 500ms delay between color changes
+                cardView.setCardBackgroundColor(originalColor)
+                delay(200)
+            }
+        }
+    }
+
 
     private fun updateAppInfoUI(appInfo: ApplicationInfo) {
         binding.appIcon.setImageDrawable(appInfo.getAppIcon(this))
         binding.tvAppName.text = appInfo.getAppName(this)
         val packageName = appInfo.packageName
         val versionName = this.packageManager.getPackageInfo(packageName, 0).versionName
-        binding.tvPackageAndVersion.text =
-            getString(R.string.app_package_and_version, packageName, versionName)
+        binding.tvPackageAndVersion.text = packageName
+        binding.tvVersion.text = getString(R.string.version, versionName)
 
     }
 
@@ -215,10 +240,8 @@ class ReportsActivity : AppCompatActivity() {
         return try {
             val packageInfo =
                 packageManager.getPackageInfo(selectedPackageName, PackageManager.GET_PERMISSIONS)
-
             packageInfo.requestedPermissions.toList()
-
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (e: Exception) {
             Log.e("PermissionActivity", "Package not found: $selectedPackageName", e)
             return emptyList()
         }

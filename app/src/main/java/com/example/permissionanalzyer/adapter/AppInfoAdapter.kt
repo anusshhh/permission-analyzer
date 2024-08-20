@@ -50,20 +50,20 @@ class AppInfoAdapter(val isListPermission: Boolean = false) : RecyclerView.Adapt
                 val protection = permissionInfo.protection
                 when (protection) {
                     PermissionInfo.PROTECTION_DANGEROUS -> R.color.red
-                    PermissionInfo.PROTECTION_NORMAL -> R.color.white
-                    else -> R.color.white
+                    PermissionInfo.PROTECTION_NORMAL -> R.color.secondary_blue
+                    else -> R.color.secondary_blue
                 }
             } else {
                 val protectionLevel = permissionInfo.protectionLevel
                 when (protectionLevel and PermissionInfo.PROTECTION_MASK_BASE) {
                     PermissionInfo.PROTECTION_DANGEROUS -> R.color.red
-                    PermissionInfo.PROTECTION_NORMAL -> R.color.white
-                    else -> R.color.white
+                    PermissionInfo.PROTECTION_NORMAL -> R.color.secondary_blue
+                    else -> R.color.secondary_blue
                 }
             }
             ContextCompat.getColor(context, colorResId)
         } catch (e: PackageManager.NameNotFoundException) {
-            ContextCompat.getColor(context, R.color.white)
+            ContextCompat.getColor(context, R.color.secondary_blue)
         }
     }
 
